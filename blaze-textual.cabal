@@ -1,0 +1,63 @@
+name:            blaze-textual
+version:         0.1.0.0
+license:         BSD3
+license-file:    LICENSE
+category:        Text
+copyright:       Copyright 2011 MailRank, Inc.
+author:          Bryan O'Sullivan <bos@mailrank.com>
+maintainer:      Bryan O'Sullivan <bos@mailrank.com>
+stability:       experimental
+synopsis:        Fast rendering of common datatypes
+cabal-version:   >= 1.8
+homepage:        http://github.com/mailrank/blaze-textual
+bug-reports:     http://github.com/mailrank/blaze-textual/issues
+build-type:      Simple
+description:
+    A library for efficiently rendering Haskell datatypes to
+    bytestrings.
+
+extra-source-files:
+    README.markdown
+
+flag developer
+  description: operate in developer mode
+  default: False
+
+library
+  exposed-modules:
+    Blaze.Text
+    Blaze.Text.Double
+    Blaze.Text.Int
+
+  build-depends:
+    base == 4.*,
+    blaze-builder >= 0.2.1.4,
+    bytestring,
+    ghc-prim,
+    integer-gmp,
+    old-locale,
+    text >= 0.11.0.2,
+    time,
+    vector
+
+  if flag(developer)
+    ghc-options: -Werror
+    ghc-prof-options: -auto-all
+
+  ghc-options:      -Wall
+
+  if impl(ghc >= 6.11)
+    cpp-options: -DINTEGER_GMP
+    build-depends: integer-gmp >= 0.2 && < 0.3
+
+  if impl(ghc >= 6.9) && impl(ghc < 6.11)
+    cpp-options: -DINTEGER_GMP
+    build-depends: integer >= 0.1 && < 0.2
+
+source-repository head
+  type:     git
+  location: http://github.com/mailrank/blaze-textual
+
+source-repository head
+  type:     mercurial
+  location: http://bitbucket.org/bos/blaze-textual
