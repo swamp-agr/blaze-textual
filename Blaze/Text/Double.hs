@@ -28,7 +28,7 @@ import qualified Data.Vector as V
 data T = T [Int] {-# UNPACK #-} !Int
 
 float :: Float -> Builder
-float = double . fromRational . toRational
+float = double . realToFrac
 
 double :: Double -> Builder
 double f
