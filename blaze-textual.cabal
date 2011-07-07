@@ -1,5 +1,5 @@
 name:            blaze-textual
-version:         0.1.0.0
+version:         0.2.0.0
 license:         BSD3
 license-file:    LICENSE
 category:        Text
@@ -33,6 +33,7 @@ library
     base == 4.*,
     blaze-builder >= 0.2.1.4,
     bytestring,
+    double-conversion >= 0.2.0.0,
     ghc-prim,
     old-locale,
     text >= 0.11.0.2,
