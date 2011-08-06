@@ -23,26 +23,39 @@ flag developer
   description: operate in developer mode
   default: False
 
+flag native
+  description: use slow native code for double conversion
+  default: False
+
 library
   exposed-modules:
     Blaze.Text
     Blaze.Text.Double
     Blaze.Text.Int
 
+  if flag(native)
+    other-modules: Blaze.Text.Double.Native
+
   build-depends:
     base == 4.*,
     blaze-builder >= 0.2.1.4,
     bytestring,
-    double-conversion >= 0.2.0.1,
     ghc-prim,
     old-locale,
     text >= 0.11.0.2,
     time,
     vector
 
+  if !flag(native)
+    build-depends:
+      double-conversion >= 0.2.0.1
+
   if flag(developer)
     ghc-options: -Werror
     ghc-prof-options: -auto-all
+
+  if flag(native)
+    cpp-options: -DNATIVE
 
   ghc-options:      -Wall
 

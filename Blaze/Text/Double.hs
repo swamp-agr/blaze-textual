@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 -- Module:      Blaze.Text.Double
 -- Copyright:   (c) 2011 MailRank, Inc.
 -- License:     BSD3
@@ -13,6 +15,9 @@ module Blaze.Text.Double
     , double
     ) where
 
+#ifdef NATIVE
+import Blaze.Text.Double.Native
+#else
 import Blaze.ByteString.Builder (Builder, fromByteString)
 import Data.Double.Conversion.ByteString (toShortest)
 
@@ -21,3 +26,4 @@ float = double . realToFrac
 
 double :: Double -> Builder
 double f = fromByteString (toShortest f)
+#endif
