@@ -54,6 +54,21 @@ library
     cpp-options: -DINTEGER_GMP
     build-depends: integer >= 0.1 && < 0.2
 
+test-suite tests
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: tests
+  main-is:        QC.hs
+  ghc-options:    -Wall -threaded -rtsopts
+  build-depends:
+    QuickCheck >= 2.4.0.1,
+    base,
+    blaze-builder,
+    blaze-textual,
+    bytestring,
+    double-conversion,
+    test-framework >= 0.3.3 && < 0.5,
+    test-framework-quickcheck2 >= 0.2.9 && < 0.3
+
 source-repository head
   type:     git
   location: http://github.com/mailrank/blaze-textual
