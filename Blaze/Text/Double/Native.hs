@@ -32,9 +32,11 @@ float = double . realToFrac
 
 double :: Double -> Builder
 double f
-    | isNaN f || isInfinite f   = fromByteString "null"
+    | isInfinite f              = fromByteString $
+                                  if f > 0 then "Infinity" else "-Infinity"
     | f < 0 || isNegativeZero f = minus `mappend` goGeneric (floatToDigits (-f))
-    | otherwise                 = goGeneric (floatToDigits f)
+    | f >= 0                    = goGeneric (floatToDigits f)
+    | otherwise                 = fromByteString "NaN"
   where
    goGeneric p@(T _ e)
      | e < 0 || e > 7 = goExponent p
