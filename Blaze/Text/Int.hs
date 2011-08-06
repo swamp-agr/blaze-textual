@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns, CPP, MagicHash, UnboxedTuples #-}
+{-# LANGUAGE BangPatterns, CPP, MagicHash, OverloadedStrings, UnboxedTuples #-}
 
 -- Module:      Blaze.Text.Int
 -- Copyright:   (c) 2011 MailRank, Inc.
@@ -17,6 +17,8 @@ module Blaze.Text.Int
     ) where
 
 import Blaze.ByteString.Builder
+import Blaze.ByteString.Builder.Char8
+import Data.ByteString.Char8 ()
 import Data.Int (Int8, Int16, Int32, Int64)
 import Data.Monoid (mappend, mempty)
 import Data.Word (Word, Word8, Word16, Word32, Word64)
@@ -39,20 +41,56 @@ import GHC.Integer.GMP.Internals
 #endif
 
 integral :: Integral a => a -> Builder
-{-# SPECIALIZE integral :: Int -> Builder #-}
-{-# SPECIALIZE integral :: Int8 -> Builder #-}
-{-# SPECIALIZE integral :: Int16 -> Builder #-}
-{-# SPECIALIZE integral :: Int32 -> Builder #-}
-{-# SPECIALIZE integral :: Int64 -> Builder #-}
-{-# SPECIALIZE integral :: Word -> Builder #-}
-{-# SPECIALIZE integral :: Word8 -> Builder #-}
-{-# SPECIALIZE integral :: Word16 -> Builder #-}
-{-# SPECIALIZE integral :: Word32 -> Builder #-}
-{-# SPECIALIZE integral :: Word64 -> Builder #-}
+{-# RULES "integral/Int" integral = bounded :: Int -> Builder #-}
+{-# RULES "integral/Int8" integral = bounded :: Int8 -> Builder #-}
+{-# RULES "integral/Int16" integral = bounded :: Int16 -> Builder #-}
+{-# RULES "integral/Int32" integral = bounded :: Int32 -> Builder #-}
+{-# RULES "integral/Int64" integral = bounded :: Int64 -> Builder #-}
+{-# RULES "integral/Word" integral = nonNegative :: Word -> Builder #-}
+{-# RULES "integral/Word8" integral = nonNegative :: Word8 -> Builder #-}
+{-# RULES "integral/Word16" integral = nonNegative :: Word16 -> Builder #-}
+{-# RULES "integral/Word32" integral = nonNegative :: Word32 -> Builder #-}
+{-# RULES "integral/Word64" integral = nonNegative :: Word64 -> Builder #-}
 {-# RULES "integral/Integer" integral = integer :: Integer -> Builder #-}
+
+-- This definition of the function is here PURELY to be used by ghci
+-- and those rare cases where GHC is being invoked without
+-- optimization, as otherwise the rewrite rules above should fire. The
+-- test for "-0" catches an overflow if we render minBound.
 integral i
-    | i < 0     = minus `mappend` go (-i)
-    | otherwise = go i
+    | i >= 0                 = nonNegative i
+    | toByteString b == "-0" = fromString (show i)
+    | otherwise              = b
+  where b = minus `mappend` nonNegative (-i)
+
+bounded :: (Bounded a, Integral a) => a -> Builder
+{-# SPECIALIZE bounded :: Int -> Builder #-}
+{-# SPECIALIZE bounded :: Int8 -> Builder #-}
+{-# SPECIALIZE bounded :: Int16 -> Builder #-}
+{-# SPECIALIZE bounded :: Int32 -> Builder #-}
+{-# SPECIALIZE bounded :: Int64 -> Builder #-}
+bounded i
+    | i < 0 = if i == minBound
+              then handleMinBound
+              else minus `mappend` nonNegative (-i)
+    | otherwise = nonNegative i
+  where handleMinBound = minus `mappend`
+                         nonNegative (negate (k `quot` 10)) `mappend`
+                         digit (negate (k `rem` 10))
+        k = minBound `asTypeOf` i
+
+nonNegative :: Integral a => a -> Builder
+{-# SPECIALIZE nonNegative :: Int -> Builder #-}
+{-# SPECIALIZE nonNegative :: Int8 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Int16 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Int32 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Int64 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Word -> Builder #-}
+{-# SPECIALIZE nonNegative :: Word8 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Word16 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Word32 -> Builder #-}
+{-# SPECIALIZE nonNegative :: Word64 -> Builder #-}
+nonNegative = go
   where
     go n | n < 10    = digit n
          | otherwise = go (n `quot` 10) `mappend` digit (n `rem` 10)
