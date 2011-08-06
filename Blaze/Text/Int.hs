@@ -70,14 +70,12 @@ bounded :: (Bounded a, Integral a) => a -> Builder
 {-# SPECIALIZE bounded :: Int32 -> Builder #-}
 {-# SPECIALIZE bounded :: Int64 -> Builder #-}
 bounded i
-    | i < 0 = if i == minBound
-              then handleMinBound
-              else minus `mappend` nonNegative (-i)
-    | otherwise = nonNegative i
-  where handleMinBound = minus `mappend`
-                         nonNegative (negate (k `quot` 10)) `mappend`
-                         digit (negate (k `rem` 10))
-        k = minBound `asTypeOf` i
+    | i >= 0        = nonNegative i
+    | i > minBound  = minus `mappend` nonNegative (-i)
+    | otherwise     = minus `mappend`
+                      nonNegative (negate (k `quot` 10)) `mappend`
+                      digit (negate (k `rem` 10))
+  where k = minBound `asTypeOf` i
 
 nonNegative :: Integral a => a -> Builder
 {-# SPECIALIZE nonNegative :: Int -> Builder #-}
