@@ -40,7 +40,7 @@ import GHC.Integer.GMP.Internals
 # define PAIR(a,b) (a,b)
 #endif
 
-integral :: Integral a => a -> Builder
+integral :: (Integral a, Show a) => a -> Builder
 {-# RULES "integral/Int" integral = bounded :: Int -> Builder #-}
 {-# RULES "integral/Int8" integral = bounded :: Int8 -> Builder #-}
 {-# RULES "integral/Int16" integral = bounded :: Int16 -> Builder #-}
