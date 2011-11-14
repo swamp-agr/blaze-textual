@@ -53,11 +53,11 @@ We are happy to receive bug reports, fixes, documentation
 enhancements, and other improvements.
 
 Please report bugs via the
-[github issue tracker](http://github.com/mailrank/blaze-textual/issues).
+[github issue tracker](http://github.com/bos/blaze-textual/issues).
 
-Master [git repository](http://github.com/mailrank/blaze-textual):
+Master [git repository](http://github.com/bos/blaze-textual):
 
-* `git clone git://github.com/mailrank/blaze-textual.git`
+* `git clone git://github.com/bos/blaze-textual.git`
 
 There's also a [Mercurial mirror](http://bitbucket.org/bos/blaze-textual):
 
@@ -69,4 +69,4 @@ Authors
 -------
 
 This library is written and maintained by Bryan O'Sullivan,
-<bos@mailrank.com>.
+<bos@serpentine.com>.
