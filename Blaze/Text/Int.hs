@@ -3,7 +3,7 @@
 -- Module:      Blaze.Text.Int
 -- Copyright:   (c) 2011 MailRank, Inc.
 -- License:     BSD3
--- Maintainer:  Bryan O'Sullivan <bos@mailrank.com>
+-- Maintainer:  Bryan O'Sullivan <bos@serpentine.com>
 -- Stability:   experimental
 -- Portability: portable
 --
