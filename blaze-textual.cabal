@@ -31,7 +31,7 @@ flag developer
 
 flag native
   description: use slow native code for double conversion
-  default: False
+  default: True
 
 library
   exposed-modules:
