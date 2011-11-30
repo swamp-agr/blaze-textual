@@ -8,12 +8,13 @@ library.
 # Important note for users of GHCi and Template Haskell
 
 To achieve excellent performance for rendering floating point numbers,
-this package uses the
+this package can optionally use the
 [double-conversion](http://hackage.haskell.org/package/double-conversion)
 package.
 
 Unfortunately, due to bugs in GHC, some uses of GHCi and Template
-Haskell can crash if this package is loaded.
+Haskell can crash if the double-conversion package is used.  As a
+result, this package's use of double-conversion is disabled by default.
 
 * [5289: Can't use ghci with a library linked against
   libstdc++](http://hackage.haskell.org/trac/ghc/ticket/5289) (fixed
@@ -23,8 +24,8 @@ Haskell can crash if this package is loaded.
   package](http://hackage.haskell.org/trac/ghc/ticket/5386) (not yet
   fixed at the time of writing)
 
-If you are affected by these problems, you should expect the 5289
-crash to look like this:
+If you enable use of double-conversion and are affected by these
+problems, you should expect the 5289 crash to look like this:
 
     Loading package double-conversion-0.2.0.0 ... can't load .so/.DLL for: stdc++
 
@@ -33,13 +34,14 @@ The 5386 crash causes GHCi to die with a floating point exception
 
 To work around these bugs, this package includes an alternative,
 slower, floating point conversion that is written in pure Haskell.
-Because it is 10 times slower than the double-conversion package, it
-is not the default.
+Although it is 10 times slower than the double-conversion package, it
+is the default because it does not crash.
 
-To use it, reinstall this package by passing the `native` flag to
-`cabal`:
+If you don't use GHCi or Template Haskell, and you want to force
+the use of double-conversion, you can reinstall this package by
+disabling the `native` flag with `cabal`:
 
-    cabal install -fnative
+    cabal install -f-native --reinstall
 
 Afterwards, you will also need to reinstall any downstream packages
 that depend on this one, e.g. the [aeson JSON
