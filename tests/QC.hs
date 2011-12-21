@@ -9,13 +9,13 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import qualified Data.ByteString.Char8 as B
 
 -- Integral values should be rendered exactly as Haskell does.
-t_integral :: Integral a => a -> a -> Bool
+t_integral :: (Integral a, Show a) => a -> a -> Bool
 t_integral _ i = toByteString (integral i) == B.pack (show i)
 
 -- This package doesn't render floating point numbers exactly as
 -- Haskell does, but the numbers it renders should read back exactly.
 -- So that's the property we check.
-t_real :: (RealFloat a, Read a) => (a -> Builder) -> a -> a -> Bool
+t_real :: (RealFloat a, Show a, Read a) => (a -> Builder) -> a -> a -> Bool
 t_real f i j =
     case read (B.unpack . toByteString . f $ ij) of
       r | isNaN r      -> isNaN ij
