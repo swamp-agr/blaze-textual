@@ -62,6 +62,7 @@ integral i
     | toByteString b == "-0" = fromString (show i)
     | otherwise              = b
   where b = minus `mappend` nonNegative (-i)
+{-# NOINLINE integral #-}
 
 bounded :: (Bounded a, Integral a) => a -> Builder
 {-# SPECIALIZE bounded :: Int -> Builder #-}
