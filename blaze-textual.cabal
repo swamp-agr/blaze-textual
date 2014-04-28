@@ -28,10 +28,12 @@ extra-source-files:
 flag developer
   description: operate in developer mode
   default: False
+  manual: True
 
 flag native
   description: use slow native code for double conversion
   default: True
+  manual: True
 
 library
   exposed-modules:
