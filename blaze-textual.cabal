@@ -35,6 +35,11 @@ flag native
   default: True
   manual: True
 
+flag integer-simple
+  description: use integer-simple instead of integer-gmp
+  default: False
+  manual: True
+  
 library
   exposed-modules:
     Blaze.Text
@@ -67,13 +72,18 @@ library
 
   ghc-options:      -Wall
 
-  if impl(ghc >= 6.11)
-    cpp-options: -DINTEGER_GMP
-    build-depends: integer-gmp >= 0.2
+  if flag(integer-simple) && impl(ghc >= 6.12.1)
+    cpp-options: -DINTEGER_SIMPLE
+    build-depends: integer-simple
+  
+  else
+    if impl(ghc >= 6.11)
+      cpp-options: -DINTEGER_GMP
+      build-depends: integer-gmp >= 0.2
 
-  if impl(ghc >= 6.9) && impl(ghc < 6.11)
-    cpp-options: -DINTEGER_GMP
-    build-depends: integer >= 0.1 && < 0.2
+    if impl(ghc >= 6.9) && impl(ghc < 6.11)
+      cpp-options: -DINTEGER_GMP
+      build-depends: integer >= 0.1 && < 0.2
 
 test-suite tests
   type:           exitcode-stdio-1.0

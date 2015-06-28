@@ -30,11 +30,15 @@ import GHC.Types (Int(..))
 # if __GLASGOW_HASKELL__ < 611
 import GHC.Integer.Internals
 # else
-import GHC.Integer.GMP.Internals
+#ifdef INTEGER_GMP
+import           GHC.Integer.GMP.Internals
+#elseif defined (INTEGER_SIMPLE)
+import           GHC.Integer.Simple.Internals
+#endif
 # endif
 #endif
 
-#ifdef INTEGER_GMP
+#if defined (INTEGER_GMP) || defined (INTEGER_SIMPLE)
 # define PAIR(a,b) (# a,b #)
 #else
 # define PAIR(a,b) (a,b)
@@ -106,7 +110,9 @@ int = integral
 {-# INLINE int #-}
 
 integer :: Integer -> Builder
+#ifdef INTEGER_GMP
 integer (S# i#) = int (I# i#)
+#endif
 integer i
     | i < 0     = minus `mappend` go (-i)
     | otherwise = go i
