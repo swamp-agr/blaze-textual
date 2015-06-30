@@ -26,23 +26,13 @@ import GHC.Base (quotInt, remInt)
 import GHC.Num (quotRemInteger)
 import GHC.Types (Int(..))
 
-#ifdef  __GLASGOW_HASKELL__
-# if __GLASGOW_HASKELL__ < 611
-import GHC.Integer.Internals
-# else
-#ifdef INTEGER_GMP
-import           GHC.Integer.GMP.Internals
-#elseif defined (INTEGER_SIMPLE)
-import           GHC.Integer.Simple.Internals
-#endif
-# endif
+#if defined(INTEGER_GMP)
+import GHC.Integer.GMP.Internals
+#elseif defined(INTEGER_SIMPLE)
+import GHC.Integer.Simple.Internals
 #endif
 
-#if defined (INTEGER_GMP) || defined (INTEGER_SIMPLE)
-# define PAIR(a,b) (# a,b #)
-#else
-# define PAIR(a,b) (a,b)
-#endif
+#define PAIR(a,b) (# a,b #)
 
 integral :: (Integral a, Show a) => a -> Builder
 {-# RULES "integral/Int" integral = bounded :: Int -> Builder #-}
@@ -110,7 +100,7 @@ int = integral
 {-# INLINE int #-}
 
 integer :: Integer -> Builder
-#ifdef INTEGER_GMP
+#if defined(INTEGER_GMP)
 integer (S# i#) = int (I# i#)
 #endif
 integer i
