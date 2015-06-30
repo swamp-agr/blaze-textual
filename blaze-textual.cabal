@@ -23,6 +23,7 @@ description:
 
 extra-source-files:
     README.markdown
+    changelog.md
     tests/*.hs
 
 flag developer
