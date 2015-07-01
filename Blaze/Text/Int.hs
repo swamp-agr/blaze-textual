@@ -28,7 +28,7 @@ import GHC.Types (Int(..))
 
 #if defined(INTEGER_GMP)
 import GHC.Integer.GMP.Internals
-#elseif defined(INTEGER_SIMPLE)
+#elif defined(INTEGER_SIMPLE)
 import GHC.Integer.Simple.Internals
 #endif
 
