@@ -50,10 +50,11 @@ integral :: (Integral a, Show a) => a -> Builder
 -- This definition of the function is here PURELY to be used by ghci
 -- and those rare cases where GHC is being invoked without
 -- optimization, as otherwise the rewrite rules above should fire. The
--- test for "-0" catches an overflow if we render minBound.
+-- test for `(-i) == i` catches when we render minBound, in which case
+-- using `-i` would be wrong. An example is `-(-128 :: Int8) == -128`.
 integral i
     | i >= 0                 = nonNegative i
-    | toByteString b == "-0" = fromString (show i)
+    | (-i) == i              = fromString (show i)
     | otherwise              = b
   where b = minus `mappend` nonNegative (-i)
 {-# NOINLINE integral #-}
