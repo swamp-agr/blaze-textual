@@ -83,7 +83,9 @@ nonNegative :: Integral a => a -> Builder
 {-# SPECIALIZE nonNegative :: Word16 -> Builder #-}
 {-# SPECIALIZE nonNegative :: Word32 -> Builder #-}
 {-# SPECIALIZE nonNegative :: Word64 -> Builder #-}
-nonNegative = go
+nonNegative x
+  | x < 0 = error $ "nonNegative: Called with negative number " ++ show (fromIntegral x :: Integer)
+  | otherwise = go x
   where
     go n | n < 10    = digit n
          | otherwise = go (n `quot` 10) `mappend` digit (n `rem` 10)
