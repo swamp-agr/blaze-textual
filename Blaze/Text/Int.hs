@@ -23,7 +23,10 @@ import Data.Int (Int8, Int16, Int32, Int64)
 import Data.Monoid (mappend, mempty)
 import Data.Word (Word, Word8, Word16, Word32, Word64)
 import GHC.Base (quotInt, remInt)
+#if MIN_VERSION_base(4,15,0)
+#elif
 import GHC.Num (quotRemInteger)
+#endif
 import GHC.Types (Int(..))
 
 #if defined(INTEGER_GMP)
