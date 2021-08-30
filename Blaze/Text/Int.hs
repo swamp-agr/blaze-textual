@@ -24,7 +24,7 @@ import Data.Monoid (mappend, mempty)
 import Data.Word (Word, Word8, Word16, Word32, Word64)
 import GHC.Base (quotInt, remInt)
 #if MIN_VERSION_base(4,15,0)
-#elif
+#else
 import GHC.Num (quotRemInteger)
 #endif
 import GHC.Types (Int(..))
