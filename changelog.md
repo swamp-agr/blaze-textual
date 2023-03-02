@@ -1,3 +1,8 @@
+0.2.3  2023-03-02
+
+* Fix incorrect minBound detection and `-128 :: Int8` (see [#12](https://github.com/swamp-agr/blaze-textual/pull/12)).
+
+
 0.2.2.1  2021-08-30
 
 * Restore support for GHC <9.
